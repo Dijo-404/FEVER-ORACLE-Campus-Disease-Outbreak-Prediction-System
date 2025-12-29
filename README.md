@@ -31,6 +31,95 @@ FEVER ORACLE is an AI-powered system designed to predict and prevent disease out
 
 ## Architecture
 
+### System Architecture Diagram
+
+```mermaid
+flowchart TB
+    subgraph Users["Users"]
+        S[Students]
+        H[Health Officials]
+    end
+
+    subgraph Frontend["Frontend - React + Vite"]
+        UI[Web Application]
+        SR[Symptom Reporter]
+        DB[Dashboard]
+        HM[Heatmap View]
+    end
+
+    subgraph Backend["Backend - FastAPI"]
+        API[REST API]
+        AUTH[Authentication]
+        VAL[Data Validation]
+    end
+
+    subgraph GoogleCloud["Google Cloud Platform"]
+        CR[Cloud Run]
+        BQ[BigQuery]
+        VA[Vertex AI]
+        PS[Cloud Pub/Sub]
+        FB[Firebase Hosting]
+    end
+
+    subgraph ML["ML Pipeline"]
+        DP[Data Processing]
+        PM[Prediction Model]
+        AD[Anomaly Detection]
+    end
+
+    S --> SR
+    H --> DB
+    SR --> UI
+    DB --> UI
+    HM --> UI
+
+    UI --> API
+    API --> VAL
+    VAL --> CR
+
+    CR --> BQ
+    CR --> VA
+    VA --> PM
+    PM --> AD
+    AD --> PS
+    PS --> DB
+
+    BQ --> DP
+    DP --> PM
+
+    UI -.-> FB
+    API -.-> CR
+```
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant Student
+    participant Frontend
+    participant API
+    participant Database
+    participant ML
+    participant Dashboard
+
+    Student->>Frontend: Report Symptoms
+    Frontend->>API: POST /api/symptoms
+    API->>Database: Store Report
+    API-->>Frontend: Confirmation + Health Tip
+
+    loop Every 15 minutes
+        ML->>Database: Fetch Recent Data
+        ML->>ML: Analyze Patterns
+        ML->>Database: Update Predictions
+    end
+
+    Dashboard->>API: GET /api/predictions
+    API->>Database: Query Predictions
+    API-->>Dashboard: Return Forecast Data
+```
+
+### Project Structure
+
 ```
 FEVER-ORACLE-Campus-Disease-Outbreak-Prediction-System/
 ├── frontend/           # React + TypeScript + Vite
