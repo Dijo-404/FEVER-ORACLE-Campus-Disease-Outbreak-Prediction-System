@@ -79,6 +79,39 @@ flowchart TB
     CS --> CF
 ```
 
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant Student
+    participant Frontend
+    participant API
+    participant BigQuery
+    participant Gemini
+    participant VertexAI
+    participant PubSub
+    participant Dashboard
+
+    Student->>Frontend: Report Symptoms
+    Frontend->>API: POST /api/symptoms
+    API->>Gemini: Analyze Symptoms (NLP)
+    Gemini-->>API: Analysis + Health Tip
+    API->>BigQuery: Store Report
+    API->>PubSub: Publish Event
+    API-->>Frontend: Confirmation + AI Analysis
+
+    loop Every 15 minutes
+        VertexAI->>BigQuery: Fetch Recent Data
+        VertexAI->>VertexAI: Generate Predictions
+        VertexAI->>BigQuery: Update Predictions
+    end
+
+    Dashboard->>API: GET /api/predictions
+    API->>VertexAI: Get Forecast
+    VertexAI-->>API: Prediction Results
+    API-->>Dashboard: Return Forecast Data
+```
+
 ---
 
 ## Project Structure
