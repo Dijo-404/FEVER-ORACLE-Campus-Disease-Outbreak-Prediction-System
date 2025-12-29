@@ -1,168 +1,116 @@
 # FEVER ORACLE
 
-**Campus Disease Outbreak Prediction System**
+**AI-Powered Campus Disease Outbreak Prediction System**
 
-FEVER ORACLE is an AI-powered system designed to predict and prevent disease outbreaks on campus. It collects anonymous symptom reports, analyzes patterns using machine learning, and provides early warnings to health officials.
-
----
-
-## Table of Contents
-
-- [Features](#features)
-- [Architecture](#architecture)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [API Documentation](#api-documentation)
-- [Deployment](#deployment)
-- [License](#license)
+FEVER ORACLE uses 15 Google Cloud technologies to predict and prevent disease outbreaks on campus through anonymous symptom reporting, real-time analytics, and AI-powered predictions.
 
 ---
 
 ## Features
 
-- **Anonymous Symptom Reporting**: Students can report symptoms without providing personal information
-- **Real-time Dashboard**: Health officials can monitor campus health status in real-time
-- **Outbreak Predictions**: AI models predict outbreaks 5-7 days in advance
-- **Campus Heatmaps**: Visual representation of symptom clusters by location
-- **Automated Alerts**: Push notifications when outbreak probability exceeds thresholds
-- **Privacy-First Design**: No personal data is collected or stored
+- **Anonymous Symptom Reporting** - No personal data collected
+- **Real-time Dashboard** - Live campus health monitoring
+- **AI Predictions** - Vertex AI outbreak forecasting
+- **Google Maps Heatmap** - Visual symptom clusters
+- **Automated Alerts** - Gemini-generated notifications
+- **BigQuery Analytics** - Comprehensive data warehouse
+
+---
+
+## Google Cloud Technologies
+
+| #   | Technology               | Purpose                        |
+| --- | ------------------------ | ------------------------------ |
+| 1   | **Vertex AI**            | ML model training & deployment |
+| 2   | **Gemini API**           | Natural language processing    |
+| 3   | **BigQuery**             | Data warehouse & analytics     |
+| 4   | **Cloud Run**            | Serverless backend             |
+| 5   | **Firebase Realtime DB** | Mobile data sync               |
+| 6   | **Cloud Pub/Sub**        | Real-time messaging            |
+| 7   | **Cloud Storage**        | HIPAA data archival            |
+| 8   | **Cloud Dataflow**       | ETL data processing            |
+| 9   | **Data Studio**          | Dashboards & visualization     |
+| 10  | **Google Maps**          | Geospatial analysis            |
+| 11  | **Cloud Tasks**          | Alert scheduling               |
+| 12  | **Cloud Scheduler**      | Cron jobs                      |
+| 13  | **Cloud Functions**      | Lightweight functions          |
+| 14  | **Cloud Logging**        | System logs                    |
+| 15  | **Cloud Monitoring**     | Performance metrics            |
 
 ---
 
 ## Architecture
 
-### System Architecture Diagram
-
 ```mermaid
 flowchart TB
-    subgraph Users["Users"]
-        S[Students]
-        H[Health Officials]
-    end
-
     subgraph Frontend["Frontend - React + Vite"]
-        UI[Web Application]
-        SR[Symptom Reporter]
-        DB[Dashboard]
-        HM[Heatmap View]
+        UI[Web App]
+        MAPS[Google Maps Heatmap]
     end
 
-    subgraph Backend["Backend - FastAPI"]
+    subgraph Backend["Backend - FastAPI on Cloud Run"]
         API[REST API]
-        AUTH[Authentication]
-        VAL[Data Validation]
+        SVC[GCP Services]
     end
 
-    subgraph GoogleCloud["Google Cloud Platform"]
-        CR[Cloud Run]
-        BQ[BigQuery]
+    subgraph AI["AI/ML"]
         VA[Vertex AI]
-        PS[Cloud Pub/Sub]
-        FB[Firebase Hosting]
+        GM[Gemini API]
     end
 
-    subgraph ML["ML Pipeline"]
-        DP[Data Processing]
-        PM[Prediction Model]
-        AD[Anomaly Detection]
+    subgraph Data["Data Layer"]
+        BQ[BigQuery]
+        FDB[Firebase Realtime DB]
+        GCS[Cloud Storage]
     end
 
-    S --> SR
-    H --> DB
-    SR --> UI
-    DB --> UI
-    HM --> UI
+    subgraph Automation["Automation"]
+        PS[Pub/Sub]
+        CT[Cloud Tasks]
+        CS[Cloud Scheduler]
+        CF[Cloud Functions]
+    end
 
     UI --> API
-    API --> VAL
-    VAL --> CR
-
-    CR --> BQ
-    CR --> VA
-    VA --> PM
-    PM --> AD
-    AD --> PS
-    PS --> DB
-
-    BQ --> DP
-    DP --> PM
-
-    UI -.-> FB
-    API -.-> CR
-```
-
-### Data Flow
-
-```mermaid
-sequenceDiagram
-    participant Student
-    participant Frontend
-    participant API
-    participant Database
-    participant ML
-    participant Dashboard
-
-    Student->>Frontend: Report Symptoms
-    Frontend->>API: POST /api/symptoms
-    API->>Database: Store Report
-    API-->>Frontend: Confirmation + Health Tip
-
-    loop Every 15 minutes
-        ML->>Database: Fetch Recent Data
-        ML->>ML: Analyze Patterns
-        ML->>Database: Update Predictions
-    end
-
-    Dashboard->>API: GET /api/predictions
-    API->>Database: Query Predictions
-    API-->>Dashboard: Return Forecast Data
-```
-
-### Project Structure
-
-```
-FEVER-ORACLE-Campus-Disease-Outbreak-Prediction-System/
-├── frontend/           # React + TypeScript + Vite
-│   ├── src/
-│   │   ├── components/ # UI components (shadcn/ui)
-│   │   ├── pages/      # Page components
-│   │   └── lib/        # Utilities
-│   └── public/         # Static assets
-├── backend/            # FastAPI Python server
-│   ├── main.py         # API endpoints
-│   └── requirements.txt
-└── README.md
+    MAPS --> API
+    API --> VA & GM
+    API --> BQ & FDB & GCS
+    API --> PS --> CF
+    CS --> CF
 ```
 
 ---
 
-## Technology Stack
+## Project Structure
 
-### Frontend
-
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- shadcn/ui (Radix UI primitives)
-- React Router DOM
-- Recharts (data visualization)
-- TanStack React Query
-
-### Backend
-
-- Python 3.11+
-- FastAPI
-- Uvicorn
-- Pydantic
-
-### Cloud Services (Production)
-
-- Google Cloud Run (backend deployment)
-- Firebase Hosting (frontend deployment)
-- Vertex AI (ML predictions)
-- BigQuery (data analytics)
-- Cloud Pub/Sub (real-time alerts)
+```
+├── frontend/                  # React + TypeScript + Vite
+│   ├── src/
+│   │   ├── components/        # UI components
+│   │   ├── pages/             # Page components
+│   │   └── lib/               # Firebase, API utilities
+│   └── .env.example           # Environment template
+├── backend/                   # FastAPI Python server
+│   ├── main.py                # API with GCP integration
+│   ├── services/              # GCP service modules
+│   │   ├── vertex_ai.py       # ML predictions
+│   │   ├── gemini.py          # NLP analysis
+│   │   ├── bigquery.py        # Data warehouse
+│   │   ├── pubsub.py          # Messaging
+│   │   ├── storage.py         # Cloud Storage
+│   │   ├── firebase_db.py     # Realtime DB
+│   │   ├── cloud_tasks.py     # Task queue
+│   │   ├── cloud_logging.py   # Logging
+│   │   └── cloud_monitoring.py # Metrics
+│   ├── Dockerfile             # Cloud Run container
+│   └── requirements.txt       # Python dependencies
+├── functions/                 # Cloud Functions
+│   └── main.py                # Event handlers
+├── scheduler/                 # Cloud Scheduler
+│   └── jobs.yaml              # Cron job definitions
+├── cloudbuild.yaml            # CI/CD pipeline
+└── firebase.json              # Firebase hosting config
+```
 
 ---
 
@@ -172,47 +120,98 @@ FEVER-ORACLE-Campus-Disease-Outbreak-Prediction-System/
 
 - Node.js 18+
 - Python 3.11+
-- npm or yarn
+- Google Cloud SDK
+- Firebase CLI
 
-### Frontend Setup
+### 1. Clone & Install
 
 ```bash
+# Frontend
 cd frontend
+cp .env.example .env.local
+# Edit .env.local with your Firebase config
 npm install
-npm run dev
-```
 
-The frontend will be available at `http://localhost:8080`
-
-### Backend Setup
-
-```bash
+# Backend
 cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python main.py
 ```
 
-The API will be available at `http://localhost:8000`
+### 2. Configure Environment
+
+**Frontend** (`.env.local`):
+
+```env
+VITE_API_URL=http://localhost:8000
+VITE_FIREBASE_API_KEY=your_key
+VITE_FIREBASE_PROJECT_ID=your_project
+VITE_GOOGLE_MAPS_API_KEY=your_maps_key
+```
+
+**Backend** (`.env`):
+
+```env
+GOOGLE_CLOUD_PROJECT=your_project_id
+GEMINI_API_KEY=your_gemini_key
+```
+
+### 3. Run Locally
+
+```bash
+# Terminal 1: Backend
+cd backend && python main.py
+
+# Terminal 2: Frontend
+cd frontend && npm run dev
+```
+
+- Frontend: http://localhost:8080
+- Backend: http://localhost:8000
 
 ---
 
-## API Documentation
+## Deployment
 
-### Endpoints
+### Backend (Cloud Run)
 
-| Method | Endpoint           | Description           |
-| ------ | ------------------ | --------------------- |
-| GET    | `/`                | API information       |
-| GET    | `/api/health`      | Health check          |
-| POST   | `/api/symptoms`    | Submit symptom report |
-| GET    | `/api/stats`       | Dashboard statistics  |
-| GET    | `/api/alerts`      | Active alerts         |
-| GET    | `/api/heatmap`     | Campus zone data      |
-| GET    | `/api/predictions` | 14-day forecast       |
+```bash
+gcloud builds submit --config cloudbuild.yaml
+```
 
-### Submit Symptom Report
+### Frontend (Firebase Hosting)
+
+```bash
+cd frontend
+npm run build
+firebase deploy
+```
+
+### Cloud Functions
+
+```bash
+cd functions
+gcloud functions deploy on_symptom_report \
+  --runtime python311 \
+  --trigger-topic symptom-reports
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint           | Description                  |
+| ------ | ------------------ | ---------------------------- |
+| GET    | `/`                | API info + GCP services list |
+| GET    | `/api/health`      | Health check                 |
+| POST   | `/api/symptoms`    | Submit report (AI analysis)  |
+| GET    | `/api/stats`       | Dashboard statistics         |
+| GET    | `/api/alerts`      | Gemini-generated alerts      |
+| GET    | `/api/heatmap`     | Campus zone data             |
+| GET    | `/api/predictions` | Vertex AI forecast           |
+
+### Example Request
 
 ```bash
 curl -X POST http://localhost:8000/api/symptoms \
@@ -224,37 +223,20 @@ curl -X POST http://localhost:8000/api/symptoms \
   }'
 ```
 
-### Response
+### Response (with AI Analysis)
 
 ```json
 {
   "success": true,
-  "message": "Report submitted successfully",
   "report_id": "RPT-000001",
-  "health_tip": "Stay hydrated and get plenty of rest."
+  "health_tip": "Stay hydrated and get plenty of rest.",
+  "analysis": {
+    "likely_conditions": ["Common cold", "Seasonal flu"],
+    "risk_assessment": "moderate",
+    "recommendation": "Monitor symptoms and visit health center if they worsen.",
+    "should_seek_care": false
+  }
 }
-```
-
----
-
-## Deployment
-
-### Frontend (Firebase Hosting)
-
-```bash
-cd frontend
-npm run build
-firebase deploy --only hosting
-```
-
-### Backend (Google Cloud Run)
-
-```bash
-cd backend
-gcloud run deploy fever-oracle-api \
-  --source . \
-  --region us-central1 \
-  --allow-unauthenticated
 ```
 
 ---
@@ -268,7 +250,6 @@ MIT License
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit changes (`git commit -m 'Add new feature'`)
-4. Push to branch (`git push origin feature/new-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Commit changes
+4. Push and open a Pull Request
