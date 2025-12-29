@@ -1,4 +1,23 @@
+# FEVER ORACLE Backend Requirements
+
+# Core Framework
 fastapi>=0.109.0
 uvicorn[standard]>=0.27.0
 pydantic>=2.5.0
 python-multipart>=0.0.6
+
+# Google Cloud Platform Services
+google-cloud-aiplatform>=1.38.0
+google-generativeai>=0.3.0
+google-cloud-bigquery>=3.14.0
+google-cloud-pubsub>=2.19.0
+google-cloud-storage>=2.14.0
+google-cloud-tasks>=2.15.0
+google-cloud-logging>=3.9.0
+google-cloud-monitoring>=2.18.0
+
+# Firebase
+firebase-admin>=6.3.0
+
+# Utilities
+python-dotenv>=1.0.0

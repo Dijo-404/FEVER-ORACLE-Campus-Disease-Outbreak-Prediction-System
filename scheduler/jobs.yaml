@@ -1,0 +1,59 @@
+# Cloud Scheduler Jobs for FEVER ORACLE
+# Deploy with: gcloud scheduler jobs create http <job-name> ...
+
+jobs:
+  # Daily report generation at 8 AM UTC
+  - name: generate-daily-report
+    schedule: "0 8 * * *"
+    timezone: "UTC"
+    description: "Generate daily health summary report"
+    http_target:
+      uri: "https://REGION-PROJECT_ID.cloudfunctions.net/generate_daily_report"
+      http_method: POST
+      headers:
+        Content-Type: "application/json"
+    retry_config:
+      retry_count: 3
+      min_backoff_duration: "30s"
+      max_backoff_duration: "3600s"
+
+  # Weekly model retraining on Sundays at 2 AM UTC
+  - name: retrain-prediction-model
+    schedule: "0 2 * * 0"
+    timezone: "UTC"
+    description: "Retrain outbreak prediction model"
+    http_target:
+      uri: "https://REGION-PROJECT_ID.cloudfunctions.net/retrain_model"
+      http_method: POST
+      headers:
+        Content-Type: "application/json"
+    retry_config:
+      retry_count: 2
+      min_backoff_duration: "60s"
+      max_backoff_duration: "7200s"
+
+  # Hourly data aggregation
+  - name: aggregate-hourly-stats
+    schedule: "0 * * * *"
+    timezone: "UTC"
+    description: "Aggregate hourly statistics for dashboard"
+    http_target:
+      uri: "https://CLOUD_RUN_URL/api/internal/aggregate"
+      http_method: POST
+      headers:
+        Content-Type: "application/json"
+    retry_config:
+      retry_count: 3
+      min_backoff_duration: "10s"
+      max_backoff_duration: "300s"
+
+  # Daily cleanup of old Firebase realtime data
+  - name: cleanup-realtime-data
+    schedule: "0 3 * * *"
+    timezone: "UTC"
+    description: "Clean up old real-time dashboard data"
+    http_target:
+      uri: "https://CLOUD_RUN_URL/api/internal/cleanup"
+      http_method: POST
+      headers:
+        Content-Type: "application/json"
